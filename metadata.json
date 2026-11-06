@@ -1,0 +1,6 @@
+{
+  "name": "OfflineTik",
+  "description": "Offline short-video player and audio vault with TikTok-style vertical scrolling feed, local video saving, and native share integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
