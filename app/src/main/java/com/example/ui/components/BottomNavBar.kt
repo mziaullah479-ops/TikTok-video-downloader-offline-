@@ -2,6 +2,7 @@ package com.example.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.example.ui.navigation.NavigationTab
 import com.example.ui.theme.BrandGradient
 import com.example.ui.theme.DividerDark
+import com.example.ui.theme.NeonCyan
 import com.example.ui.theme.NeonPink
 import com.example.ui.theme.PureBlack
 import com.example.ui.theme.SurfaceDark
@@ -50,15 +54,24 @@ fun BottomNavBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(SurfaceDark.copy(alpha = 0.95f))
+            .background(SurfaceDark.copy(alpha = 0.98f))
             .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
-        // Thin top divider
+        // High-contrast top border divider
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(0.5.dp)
-                .background(DividerDark)
+                .height(1.dp)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            DividerDark,
+                            NeonPink.copy(alpha = 0.35f),
+                            NeonCyan.copy(alpha = 0.35f),
+                            DividerDark
+                        )
+                    )
+                )
                 .align(Alignment.TopCenter)
         )
 
@@ -78,11 +91,18 @@ fun BottomNavBar(
                     label = "iconColor"
                 )
 
+                val tabScale by animateFloatAsState(
+                    targetValue = if (isSelected) 1.08f else 1.0f,
+                    animationSpec = spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessMedium),
+                    label = "tabScale"
+                )
+
                 val interactionSource = remember { MutableInteractionSource() }
 
                 Column(
                     modifier = Modifier
                         .weight(1f)
+                        .scale(tabScale)
                         .clip(RoundedCornerShape(12.dp))
                         .clickable(
                             interactionSource = interactionSource,
@@ -100,7 +120,7 @@ fun BottomNavBar(
                             .height(32.dp)
                             .clip(CircleShape)
                             .background(
-                                if (isSelected) BrandGradient else androidx.compose.ui.graphics.Brush.linearGradient(
+                                if (isSelected) BrandGradient else Brush.linearGradient(
                                     listOf(Color.Transparent, Color.Transparent)
                                 )
                             )
@@ -111,7 +131,7 @@ fun BottomNavBar(
                             imageVector = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
                             contentDescription = tab.title,
                             tint = iconColor,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(21.dp)
                         )
                     }
 
@@ -119,7 +139,7 @@ fun BottomNavBar(
                         text = tab.title,
                         color = if (isSelected) TextPrimary else TextMuted,
                         fontSize = 11.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                         maxLines = 1,
                         modifier = Modifier.padding(top = 2.dp)
                     )

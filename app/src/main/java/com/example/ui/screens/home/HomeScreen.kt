@@ -334,7 +334,7 @@ fun VideoFeedItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Save to Phone Gallery Button
+            // 1. Save to Phone Gallery Button (Enhanced with TikTok Neon Halo)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -345,21 +345,34 @@ fun VideoFeedItem(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(PureBlack.copy(alpha = 0.55f)),
+                        .background(
+                            Brush.sweepGradient(
+                                listOf(NeonCyan, NeonPink, NeonCyan)
+                            )
+                        )
+                        .padding(1.5.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Download,
-                        contentDescription = "Save to Phone Gallery",
-                        tint = NeonCyan,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                            .background(PureBlack.copy(alpha = 0.75f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Download,
+                            contentDescription = "Save to Phone Gallery",
+                            tint = NeonCyan,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
                 Text(
                     text = "Gallery",
                     color = Color.White,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -489,12 +502,12 @@ fun VideoFeedItem(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Sound Marquee Row
+            // Sound Marquee Row with Live Equalizer
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(PureBlack.copy(alpha = 0.45f))
+                    .background(PureBlack.copy(alpha = 0.55f))
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Icon(
@@ -509,8 +522,11 @@ fun VideoFeedItem(
                     color = Color.White,
                     fontSize = 12.sp,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
+                Spacer(modifier = Modifier.width(8.dp))
+                AudioEqualizerBars(isPlaying = isPlaying)
             }
         }
 
@@ -581,6 +597,33 @@ fun SpinningSoundDisc(soundTitle: String, isPlaying: Boolean) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun AudioEqualizerBars(isPlaying: Boolean) {
+    val infiniteTransition = rememberInfiniteTransition(label = "equalizer")
+    val h1 by infiniteTransition.animateFloat(
+        initialValue = 4f, targetValue = 13f,
+        animationSpec = infiniteRepeatable(tween(380, easing = LinearEasing), RepeatMode.Reverse), label = "h1"
+    )
+    val h2 by infiniteTransition.animateFloat(
+        initialValue = 12f, targetValue = 4f,
+        animationSpec = infiniteRepeatable(tween(320, easing = LinearEasing), RepeatMode.Reverse), label = "h2"
+    )
+    val h3 by infiniteTransition.animateFloat(
+        initialValue = 6f, targetValue = 14f,
+        animationSpec = infiniteRepeatable(tween(420, easing = LinearEasing), RepeatMode.Reverse), label = "h3"
+    )
+
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(2.5.dp),
+        modifier = Modifier.height(14.dp).padding(horizontal = 2.dp)
+    ) {
+        Box(Modifier.width(2.5.dp).height(if (isPlaying) h1.dp else 4.dp).clip(RoundedCornerShape(1.dp)).background(NeonCyan))
+        Box(Modifier.width(2.5.dp).height(if (isPlaying) h2.dp else 7.dp).clip(RoundedCornerShape(1.dp)).background(NeonPink))
+        Box(Modifier.width(2.5.dp).height(if (isPlaying) h3.dp else 5.dp).clip(RoundedCornerShape(1.dp)).background(NeonCyan))
     }
 }
 
